@@ -1,15 +1,20 @@
 #include <stdio.h>
 
+//First Address to read in memory
 #define START_RAM 0x200
-#define fopcode memory[pc] << 8 | memory[pc + 1] //Fetch OpCode
 
-//Current opcode
-static unsigned short opcode;
+// Fields from the opcode.
 
-/* CPU */
+#define GET_N(opcode)  (opcode & 0x000F) >> 0
+#define GET_Y(opcode)  (opcode & 0x00F0) >> 4
+#define GET_X(opcode)  (opcode & 0x0F00) >> 8
+#define GET_NN(opcode) (opcode & 0x00FF) >> 0
+#define GET_NNN(opcode)(opcode & 0x0FFF) >> 0 
+
+/* CHIP 8 CPU Structure  */
 typedef struct CPU
 {
-	//RAM Memory (4K memory) 
+	//RAM Memory (4KB memory) 
 	unsigned char Memory[0x1000];
 
 	//Registers V(0 to F)
@@ -24,18 +29,25 @@ typedef struct CPU
 	//Stack Pointer
 	unsigned char SP;
 
+	//Stack with 16 layers
+	unsigned char Stack[0x0F];
+
 	struct Timers
 	{
 		unsigned char DelayTimer;
 		unsigned char SoundTimer;
 	}Timers;
+
+	//Register that contains current opcode
+	unsigned short Opcode;
 } CPU;
 
 /* CPU Functions */
+
 void Initialization(CPU* cpu, FILE* rom);
 void LoadROM(CPU* cpu, FILE* rom);
 void LoadFontSets(CPU* cpu);
-void Cycle(CPU* cpu);
+void InstructionCycle(CPU* cpu);
 
 /* Others */
 

@@ -4,10 +4,10 @@
 
 int main(int argc, char* argv[])
 {
-	CPU CPU;
-	FILE ROM;
+	CPU cpu;
+	FILE rom;
 
-	Initialization(&CPU, &ROM);
-
+	Initialization(&cpu, &rom);
+	InstructionCycle(&cpu);
 	return 0;
 }
