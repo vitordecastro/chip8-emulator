@@ -90,7 +90,49 @@ void InstructionCycle(CPU* cpu)
 		case 0x7000: // 7XNN:	Adds NN to VX
 			cpu->V[GET_X(cpu->Opcode)] += GET_NN(cpu->Opcode);
 			break;
-	default:
-		printf("Unknown opcode: 0x%X\n", cpu->Opcode);
+		case 0x8000:
+			switch (cpu->Opcode & 0x000F)
+			{
+				case 0x0000: // 8XY0:	Sets VX to the value of VY
+					cpu->V[GET_X(cpu->Opcode)] = cpu->V[GET_Y(cpu->Opcode)];
+					break;
+				case 0x0001: // 8XY1:	Sets VX to VX or VY. (Bitwise OR operation) VF is reset to 0
+					cpu->V[GET_X(cpu->Opcode)] |= cpu->V[GET_Y(cpu->Opcode)];
+					//cpu->V[0x0F] = 0;
+					break;
+				case 0x0002: // 8XY2:	Sets VX to VX and VY. (Bitwise AND operation) VF is reset to 0
+					cpu->V[GET_X(cpu->Opcode)] &= cpu->V[GET_Y(cpu->Opcode)];
+					//cpu->V[0x0F] = 0;
+					break;
+				case 0x0003: // 8XY3:	Sets VX to VX xor VY. VF is reset to 0
+					cpu->V[GET_X(cpu->Opcode)] ^= cpu->V[GET_Y(cpu->Opcode)];
+					//cpu->V[0x0F] = 0;
+					break;
+				case 0x0004: // 8XY4:	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't
+					cpu->V[0xF] = cpu->V[GET_Y(cpu->Opcode)] > (0xFF - cpu->V[GET_X(cpu->Opcode)]);
+					cpu->V[GET_X(cpu->Opcode)] += cpu->V[GET_Y(cpu->Opcode)];
+					break;
+				case 0x0005: // 8XY5:	VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't
+					cpu->V[0xF] = cpu->V[GET_X(cpu->Opcode)] > cpu->V[GET_Y(cpu->Opcode)];
+					cpu->V[GET_X(cpu->Opcode)] -= cpu->V[GET_Y(cpu->Opcode)];
+					break;
+				case 0x0006: // 8XY6:	Shifts VX right by one. VF is set to the value of the least significant bit of VX before the shift
+					cpu->V[0xF] = cpu->V[GET_X(cpu->Opcode)] & 0x0001;
+					cpu->V[GET_X(cpu->Opcode)] >>= 1;
+					break;
+				case 0x0007: // 8XY7:	Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't
+					cpu->V[0xF] = (cpu->V[GET_Y(cpu->Opcode)] > cpu->V[GET_X(cpu->Opcode)]);
+					cpu->V[GET_X(cpu->Opcode)] = cpu->V[GET_Y(cpu->Opcode)] - cpu->V[GET_X(cpu->Opcode)];
+					break;
+				case 0x000E: // 8XYE:	Shifts VX left by one. VF is set to the value of the most significant bit of VX before the shift
+					cpu->V[0xF] = cpu->V[GET_X(cpu->Opcode)] >> 7;
+					cpu->V[GET_X(cpu->Opcode)] >>= 1;
+					break;
+				default:
+					printf("Unknown opcode [0x0000]: 0x%X\n", cpu->Opcode);
+			}
+			break;
+		default:
+			printf("Unknown opcode: 0x%X\n", cpu->Opcode);
 	}
 }

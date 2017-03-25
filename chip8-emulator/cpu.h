@@ -18,7 +18,7 @@ typedef struct CPU
 	unsigned char Memory[0x1000];
 
 	//Registers V(0 to F)
-	unsigned char V[0x0F];
+	unsigned char V[0x10];
 
 	//Register I (Index)
 	unsigned int I;
