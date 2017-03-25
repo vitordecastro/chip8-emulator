@@ -1,11 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* Display Resolution */
+#define W 64
+#define H 32
+
 //First Address to read in memory
 #define START_RAM 0x200
+
+//RAND_MAX to rand function
 #define RAND_MAX 255
 
-// Fields from the opcode.
+/* Fields from the opcode. */
 
 #define GET_N(opcode)  (opcode & 0x000F) >> 0
 #define GET_Y(opcode)  (opcode & 0x00F0) >> 4
@@ -32,8 +38,9 @@ typedef struct CPU
 	unsigned char SP;
 
 	//Stack with 16 layers
-	unsigned char Stack[0x0F];
+	unsigned char Stack[0x10];
 
+	//Timers (Delay and Sound)
 	struct Timers
 	{
 		unsigned char DelayTimer;
@@ -42,6 +49,13 @@ typedef struct CPU
 
 	//Register that contains current opcode
 	unsigned short Opcode;
+
+	//Registers that contains key states (0 to F)
+	unsigned char Keys[0x10];
+
+	//Display based on W and H
+	unsigned char Display[W][H];
+
 } CPU;
 
 /* CPU Functions */
@@ -53,7 +67,7 @@ void InstructionCycle(CPU* cpu);
 
 /* Others */
 
-//Sprites - Fonts(0 to F) - It must be load after jump to 0x200
+//Sprites - Fonts(0 to F)
 const unsigned char sprites[80] = {
 	0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 	0x20, 0x60, 0x20, 0x20, 0x70, // 1

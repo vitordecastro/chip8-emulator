@@ -152,6 +152,69 @@ void InstructionCycle(CPU* cpu)
 		case 0XD000:
 			//draw
 			break;
+		case 0xE000:
+			switch (cpu->Opcode & 0x000F)
+			{
+				case 0x009E: // EX9E:	Skips the next instruction if the key stored in VX is pressed. (Usually the next instruction is a jump to skip a code block)
+					if (cpu->Keys[cpu->V[GET_X(cpu->Opcode)]] == 1)
+						IncrementPC(cpu);
+					break;
+				case 0x00A1: // EXA1:	Skips the next instruction if the key stored in VX isn't pressed. (Usually the next instruction is a jump to skip a code block)
+					if (cpu->Keys[cpu->V[GET_X(cpu->Opcode)]] == 0)
+						IncrementPC(cpu);
+					break;
+				default:
+					printf("Unknown opcode: 0x%X\n", cpu->Opcode);
+			}
+			break;
+		case 0xF000:
+			switch (cpu->Opcode & 0x00FF)
+			{
+				case 0x0007: // FX07:	Sets VX to the value of the delay timer
+					cpu->V[GET_X(cpu->Opcode)] = cpu->Timers.DelayTimer;
+					break;
+				case 0x000A: // FX0A:	A key press is awaited, and then stored in VX
+					int keyPressed = -1;
+					for (int i = 0; i < 16; i++) {
+						if (cpu->Keys[i] == 1) {
+							keyPressed = i;
+							break;
+						}
+					}
+					if (keyPressed)
+						cpu->V[GET_X(cpu->Opcode)] = keyPressed;
+					else
+						cpu->PC -= 2;
+					break;
+				case 0x0015: // FX15:	Sets the delay timer to VX
+					cpu->Timers.DelayTimer = cpu->V[GET_X(cpu->Opcode)];
+					break;
+				case 0x0018: // FX18:	Sets the sound timer to VX
+					cpu->Timers.SoundTimer = cpu->V[GET_X(cpu->Opcode)];
+					break;
+				case 0x001E: // FX1E:	Adds VX to I
+					cpu->I += cpu->V[GET_X(cpu->Opcode)];
+					break; 
+				case 0x0029: // FX29:	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font
+					cpu->I = cpu->V[GET_X(cpu->Opcode)] * 5; //????
+					break;
+				case 0x0033: // FX33:	A key press is awaited, and then stored in VX
+					cpu->Memory[cpu->I] = cpu->V[GET_X(cpu->Opcode)] / 100;
+					cpu->Memory[cpu->I + 1] = (cpu->V[GET_X(cpu->Opcode)] / 10) % 10;
+					cpu->Memory[cpu->I + 2] = cpu->V[GET_X(cpu->Opcode)] % 10;
+					break;
+				case 0x0055: // FX55:	Stores V0 to VX (including VX) in memory starting at address I.
+					for (int i = 0; i <= GET_X(cpu->Opcode); i++)
+						cpu->Memory[cpu->I + i] = cpu->V[i];
+					break;
+				case 0x0065: // FX65:	Fills V0 to VX (including VX) with values from memory starting at address I
+					for (int i = 0; i <= GET_X(cpu->Opcode); i++)
+						cpu->V[i] = cpu->Memory[cpu->I + i];
+					break;
+				default:
+					printf("Unknown opcode: 0x%X\n", cpu->Opcode);
+			}
+			break;
 		default:
 			printf("Unknown opcode: 0x%X\n", cpu->Opcode);
 	}
