@@ -41,6 +41,8 @@ void InstructionCycle(CPU* cpu)
 	//Fetch Code
 	cpu->Opcode = cpu->Memory[cpu->PC] << 8 | cpu->Memory[cpu->PC + 1];
 
+	IncrementPC(cpu);
+
 	// Decode opcode
 
 	const unsigned short operation = cpu->Opcode & 0xF000;
@@ -132,6 +134,7 @@ void InstructionCycle(CPU* cpu)
 					printf("Unknown opcode [0x0000]: 0x%X\n", cpu->Opcode);
 			}
 			break;
+
 		default:
 			printf("Unknown opcode: 0x%X\n", cpu->Opcode);
 	}
