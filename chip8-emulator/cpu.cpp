@@ -134,7 +134,24 @@ void InstructionCycle(CPU* cpu)
 					printf("Unknown opcode [0x0000]: 0x%X\n", cpu->Opcode);
 			}
 			break;
-
+		case 0x9000: // 9XY0:	Skips the next instruction if VX doesn't equal VY. (Usually the next instruction is a jump to skip a code block)
+			if (cpu->V[GET_X(cpu->Opcode)] != GET_Y(cpu->Opcode))
+			{
+				IncrementPC(cpu);
+			}
+			break;
+		case 0xA000: // ANNN:	Sets I to the address NNN
+			cpu->I = GET_NNN(cpu->Opcode);
+			break;
+		case 0xB000: // BNNN:	Jumps to the address NNN plus V0
+			cpu->PC = GET_NNN(cpu->Opcode) + cpu->V[0x0];
+			break;
+		case 0xC000: // CNNN:	Sets VX to the result of a bitwise and operation on a random number (Typically: 0 to 255) and NN
+			cpu->V[GET_X(cpu->Opcode)] = rand() & GET_NN(cpu->Opcode);
+			break;
+		case 0XD000:
+			//draw
+			break;
 		default:
 			printf("Unknown opcode: 0x%X\n", cpu->Opcode);
 	}

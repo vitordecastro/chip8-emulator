@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 //First Address to read in memory
 #define START_RAM 0x200
+#define RAND_MAX 255
 
 // Fields from the opcode.
 
