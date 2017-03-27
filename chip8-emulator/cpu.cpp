@@ -149,8 +149,34 @@ void InstructionCycle(CPU* cpu)
 		case 0xC000: // CNNN:	Sets VX to the result of a bitwise and operation on a random number (Typically: 0 to 255) and NN
 			cpu->V[GET_X(cpu->Opcode)] = rand() & GET_NN(cpu->Opcode);
 			break;
-		case 0XD000:
-			//draw
+		case 0XD000: // DXYN:	Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels
+		{
+			unsigned short coordinateX = cpu->V[GET_X(cpu->Opcode)];
+			unsigned short coordinateY = cpu->V[GET_Y(cpu->Opcode)];
+			unsigned short spriteHeight = GET_N(cpu->Opcode);
+			unsigned short pixely, pixelx;
+
+			cpu->V[0xF] = 0;
+
+			for (int y = 0; y < spriteHeight; y)
+			{
+				pixely = ((coordinateY + y) % H);
+
+				for (int x = 0; x < 8; x++)
+				{
+					pixelx = ((coordinateY + y) % W);
+
+					short bitColorMemory = (pixely & (0x80 >> x) != 0);
+					short bitColorCurrentDisplay = cpu->Display[pixely][pixelx];
+
+					bitColorMemory ^= bitColorCurrentDisplay;	
+					cpu->Display[pixely][pixelx] = bitColorMemory;
+
+					if (!bitColorMemory && bitColorCurrentDisplay)
+						cpu->V[0xF] = 1;
+				}
+			}
+		}
 			break;
 		case 0xE000:
 			switch (cpu->Opcode & 0x000F)
@@ -173,7 +199,8 @@ void InstructionCycle(CPU* cpu)
 				case 0x0007: // FX07:	Sets VX to the value of the delay timer
 					cpu->V[GET_X(cpu->Opcode)] = cpu->Timers.DelayTimer;
 					break;
-				case 0x000A: // FX0A:	A key press is awaited, and then stored in VX
+				case 0x000A: // FX0A : A key press is awaited, and then stored in VX
+				{
 					int keyPressed = -1;
 					for (int i = 0; i < 16; i++) {
 						if (cpu->Keys[i] == 1) {
@@ -185,6 +212,7 @@ void InstructionCycle(CPU* cpu)
 						cpu->V[GET_X(cpu->Opcode)] = keyPressed;
 					else
 						cpu->PC -= 2;
+				}
 					break;
 				case 0x0015: // FX15:	Sets the delay timer to VX
 					cpu->Timers.DelayTimer = cpu->V[GET_X(cpu->Opcode)];

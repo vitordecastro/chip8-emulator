@@ -5,9 +5,9 @@
 int main(int argc, char* argv[])
 {
 	CPU cpu;
-	FILE rom;
+	FILE* rom = fopen(argv[1], "rb");
 
-	Initialization(&cpu, &rom);
+	Initialization(&cpu, rom);
 	InstructionCycle(&cpu);
 	return 0;
 }
