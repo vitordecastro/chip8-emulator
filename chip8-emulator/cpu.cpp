@@ -7,6 +7,9 @@ void Initialization(CPU* cpu, FILE* rom)
 	cpu->SP = 0;
 	cpu->Opcode = 0;
 
+	cpu->Timers.DelayTimer = 0;
+	cpu->Timers.SoundTimer = 0;
+
 	for (int i = 0; i < W*H; i++)
 		cpu->Display[i] = 0;
 
@@ -53,14 +56,15 @@ void InstructionCycle(CPU* cpu)
 	switch (operation)
 	{
 	case 0x0000:
-		switch (cpu->Opcode & 0x000F)
+		switch (cpu->Opcode & 0x00FF)
 		{
-		case 0x0000: // 00E0: Clears the screen
+		case 0x00E0: // 00E0: Clears the screen
 			for (int position = 0; position < W*H; position++)
 				cpu->Display[position] = 0;
 			break;
-		case 0x000E: // 00EE: Returns from subroutine          
+		case 0x00EE: // 00EE: Returns from subroutine          
 			cpu->PC = cpu->Stack[cpu->SP--];
+			cpu->PC += START_RAM;
 			break;
 		default:
 			printf("Unknown opcode [0x0000]: 0x%X\n", cpu->Opcode);

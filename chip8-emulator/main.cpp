@@ -44,14 +44,14 @@ int main(int argc, char* argv[])
 
 		for (int i = 0; i < 5; i++)
 		{
-		InstructionCycle(&cpu);
+			InstructionCycle(&cpu);
 		}
 
 		int pixels[W*H]; RenderTo(pixels, &cpu);
 		SDL_UpdateTexture(texture, NULL, pixels, sizeof(int)*W);
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
 		SDL_RenderPresent(renderer);
-		//SDL_Delay(5);
+		SDL_Delay(5);
 	}
 
 	VideoEnd();
@@ -68,7 +68,7 @@ int VideoStart()
 	else
 	{
 		//Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W*10, H*10, SDL_WINDOW_SHOWN);
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
