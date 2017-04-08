@@ -14,14 +14,10 @@ int main(int argc, char* argv[])
 	Initialization(&cpu, rom);
 	fclose(rom);
 
-	int close = 0;
+	short unsigned close = 0;
 	while (!close)
 	{
-		while (SDL_PollEvent(&graphic.Event) != 0){
-			if (&graphic.Event.type == SDL_QUIT){
-				close = 1;
-			}
-		}
+		WaitKeyboard(graphic.Event, &close, &cpu);
 
 		for (int i = 0; i < 5; i++)
 		{
@@ -32,6 +28,5 @@ int main(int argc, char* argv[])
 	}
 
 	VideoFinalization(&graphic);
-
 	return 0;
 }
