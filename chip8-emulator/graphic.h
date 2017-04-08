@@ -9,7 +9,7 @@ typedef struct Graphic {
 	int Success;
 	SDL_Window* Window;
 	SDL_Surface* ScreenSurface;
-	SDL_Event* Event;
+	SDL_Event Event;
 	SDL_Renderer* Renderer;
 	SDL_Texture* Texture;
 

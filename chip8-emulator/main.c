@@ -17,6 +17,12 @@ int main(int argc, char* argv[])
 	int close = 0;
 	while (!close)
 	{
+		while (SDL_PollEvent(&graphic.Event) != 0){
+			if (&graphic.Event.type == SDL_QUIT){
+				close = 1;
+			}
+		}
+
 		for (int i = 0; i < 5; i++)
 		{
 			InstructionCycle(&cpu);

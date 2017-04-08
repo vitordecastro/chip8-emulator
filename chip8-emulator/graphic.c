@@ -5,7 +5,6 @@ int VideoInitialization(Graphic *graphic, int height, int width)
 	graphic->Success = 1;
 	graphic->Window = NULL;
 	graphic->ScreenSurface = NULL;
-	graphic->Event = SDLK_0;
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
