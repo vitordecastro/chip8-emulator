@@ -1,8 +1,12 @@
-#include "cpu.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "main.h"
 #include "SDL\include\SDL.h"
 #undef _main
 
-static bool success = true;
+
+
+static int success = 1;
 static SDL_Window* gWindow = NULL;
 static SDL_Surface* gScreenSurface = NULL;
 static SDL_Event event;
@@ -33,12 +37,12 @@ int main(int argc, char* argv[])
 	Initialization(&cpu, rom);
 	fclose(rom);
 
-	int close = 1;
-	while (close)
+	int close = 0;
+	while (!close)
 	{
 		while (SDL_PollEvent(&event) != 0){
 			if (event.type == SDL_QUIT){
-				close = 0;
+				close = 1;
 			}
 		}
 
@@ -63,7 +67,7 @@ int VideoStart()
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-		success = false;
+		success = 0;
 	}
 	else
 	{
@@ -72,7 +76,7 @@ int VideoStart()
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-			success = false;
+			success = 0;
 		}
 		else
 		{
