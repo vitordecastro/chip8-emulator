@@ -6,8 +6,8 @@
 
 enum
 {
-	KEY_UP = 0,
-	KEY_DOWN = 1
+	KEY_UP = 1,
+	KEY_DOWN = 0
 
 };
 

@@ -17,12 +17,9 @@ int main(int argc, char* argv[])
 	short unsigned close = 0;
 	while (!close)
 	{
-		WaitKeyboard(graphic.Event, &close, &cpu);
+ 		InstructionCycle(&cpu);
 
-		for (int i = 0; i < 5; i++)
-		{
-			InstructionCycle(&cpu);
-		}
+		WaitKeyboard(graphic.Event, &close, &cpu);
 
 		VideoUpdate(&graphic, &cpu);
 	}

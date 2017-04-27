@@ -52,7 +52,7 @@ typedef struct CPU
 	unsigned short Opcode;
 
 	//Registers that contains key states (0 to F)
-	unsigned char Keys[0x10];
+	unsigned char Keys[16];
 
 	//Display based on W and H
 	unsigned char Display[W*H];

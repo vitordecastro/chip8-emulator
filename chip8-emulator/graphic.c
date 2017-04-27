@@ -47,7 +47,7 @@ int VideoUpdate(Graphic *graphic, CPU *cpu)
 	SDL_UpdateTexture(graphic->Texture, NULL, pixels, sizeof(int)*W);
 	SDL_RenderCopy(graphic->Renderer, graphic->Texture, NULL, NULL);
 	SDL_RenderPresent(graphic->Renderer);
-	SDL_Delay(5);
+	SDL_Delay(1);
 }
 
 int VideoFinalization(Graphic *graphic)
