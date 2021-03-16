@@ -55,7 +55,7 @@ typedef struct CPU
 	unsigned char Keys[16];
 
 	//Display based on W and H
-	unsigned char Display[W*H];
+	unsigned int Display[W*H];
 
 } CPU;
 

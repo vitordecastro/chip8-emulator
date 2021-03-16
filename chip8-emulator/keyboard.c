@@ -2,8 +2,6 @@
 
 void WaitKeyboard(SDL_Event event, short unsigned *close, CPU *cpu) 
 {
-	char *key;
-
 	if (SDL_PollEvent(&event)) 
 	{
 		switch (event.type) 
@@ -26,8 +24,8 @@ void SetKeyboardStatus(unsigned char keyboardStatus, SDL_Event event, CPU *cpu)
 	char *key = SDL_GetKeyName(event.key.keysym.sym);
 	if (strlen(key) > 1)
 		return;
-	char chr = key[0];
-	switch (chr) 
+	char *chr = key[0];
+	switch (*chr) 
 	{
 		case SDLK_1:
 			cpu->Keys[0] = keyboardStatus;
